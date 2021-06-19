@@ -2,7 +2,7 @@ const { expect } = require('chai');
 
 describe('Airdrop', function () {
   before(async function () {
-   [owner, ...accounts] = await ethers.getSigners();
+    [owner, ...accounts] = await ethers.getSigners();
     this.Airdrop = await ethers.getContractFactory("Airdrop");
 
     this.KevKen = await ethers.getContractFactory("KevKen");
@@ -11,7 +11,7 @@ describe('Airdrop', function () {
   });
 
   beforeEach(async function () {
-    this.airdropContract = await this.Airdrop.deploy(this.kevken.address,owner.address);
+    this.airdropContract = await this.Airdrop.deploy(this.kevken.address, owner.address);
     await this.airdropContract.deployed();
   });
 
@@ -22,4 +22,15 @@ describe('Airdrop', function () {
     expect(await this.airdropContract.token()).to.equal(this.kevken.address)
 
   });
+
+  it("should allows admin add new admin", async function () {
+    await this.airdropContract.updateAdmin(accounts[2].address, { from: owner.address })
+    expect(await this.airdropContract.admin()).to.equal(accounts[2].address)
+
+  });
+
+  // it("should not allowed other accounts to set new admins", async function () {
+  //   await this.airdropContract.updateAdmin(accounts[2].address, { from: accounts[2].address})
+
+  // })
 });

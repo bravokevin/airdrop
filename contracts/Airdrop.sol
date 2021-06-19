@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  */
 
 contract Airdrop {
-    
+
     address public admin;
     mapping(address => bool) public processedClaims; //prevent people clam the airdrop more than one time
     IERC20 public token; //pointer to the token
@@ -16,6 +16,8 @@ contract Airdrop {
 
     /** the total suply of the airdrop. YES it's al the suply of the token. */
     uint256 public maxAirdropAmount = 100000000 * 10**18;  
+
+    event TokensAirdropped(address recipient, uint256 amount, uint256 date);
 
     modifier onlyAdmin() {
         require(
@@ -36,16 +38,38 @@ contract Airdrop {
         admin = _newAdmin;
     }
 
-    /** @notice Each recipients have to call this function in order to claim their tokens */
+    /**
+    *@notice allows recipients to claims their tokens
+    *@param amount specifies the amounts of tokens to claim
+    *@param signature signature provided by the backend in order to verified that is the correct recipient
+     */
 
-    // function claimTokens(
-    //     address recipient,
-    //     uint256 amount,
-    //     bytes calldata signature
-    // ) external {
-    //     bytes32 message =
-    //         prefixed(keccak266(abi.encodePacked(recipient, amount)));
-    // }
+    function claimTokens(
+        address recipient,
+        uint256 amount,
+        bytes calldata signature
+    ) external {
+        bytes32 message =
+            prefixed(keccak256(abi.encodePacked(recipient, amount)));
+
+        require(recoverSigner(message, signature) == admin, 'wrong signature');
+
+        require(processedClaims[recipient] == false, "already has claimed tokens");
+
+        require(currentAirdropAmount + amount <= maxAirdropAmount, "airdropped 100% of the tokens");
+
+        processedClaims[recipient] = true;
+
+        currentAirdropAmount += amount;
+
+        token.transfer(recipient, amount);
+
+        emit TokensAirdropped(
+            recipient,
+            amount,
+            block.timestamp
+        );
+    }
 
 
     function splitSignature(bytes memory sig)
