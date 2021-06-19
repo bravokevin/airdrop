@@ -3,6 +3,7 @@ const { expect } = require("chai");
 
 describe("KevKev", function() {
   it("Contract Initialized correctly", async () => {
+    
     this.KevKen = await ethers.getContractFactory("KevKen");
     this.kevken = await this.KevKen.deploy();
     await this.kevken.deployed();

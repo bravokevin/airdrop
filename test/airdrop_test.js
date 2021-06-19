@@ -1,37 +1,25 @@
-const { expect } = require("chai");
+const { expect } = require('chai');
 
-describe("Airdrop", async () => {
-
-
-  // before(async function () {
-  //   this.Airdrop = await ethers.getContractFactory("Airdrop");
-  //   accounts = await ethers.getSigners();
-  //   KevKen = await ethers.getContractFactory("KevKen");
-  //   kevken = await KevKen.deploy();
-
-  //   await kevken.deployed();
-
-  // });
-
-  // beforeEach(async function () {
-  //   this.airdropContract = await this.Airdrop.deploy(kevken.address, accounts[0].address);
-  //   await this.airdropContract.deployed();
-
-  // });
-
-  it("Admin initialize correctly", async () => {
+describe('Airdrop', function () {
+  before(async function () {
+   [owner, ...accounts] = await ethers.getSigners();
     this.Airdrop = await ethers.getContractFactory("Airdrop");
-    accounts = await ethers.getSigners();
-    KevKen = await ethers.getContractFactory("KevKen");
-    kevken = await KevKen.deploy();
 
-    await kevken.deployed();
+    this.KevKen = await ethers.getContractFactory("KevKen");
+    this.kevken = await this.KevKen.deploy();
+    await this.kevken.deployed();
+  });
 
-    this.airdropContract = await this.Airdrop.deploy(kevken.address, accounts[0].address);
+  beforeEach(async function () {
+    this.airdropContract = await this.Airdrop.deploy(this.kevken.address,owner.address);
     await this.airdropContract.deployed();
+  });
 
+  it('Should initialized correctly', async function () {
 
-    expect(await this.airdropContract.admin()).to.equal(accounts[0].address)
+    expect(await this.airdropContract.admin()).to.equal(owner.address);
+
+    expect(await this.airdropContract.token()).to.equal(this.kevken.address)
 
   });
 });
