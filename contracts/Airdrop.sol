@@ -26,9 +26,12 @@ contract Airdrop {
         _;
     }
 
-    /** @notice set token to airdrop and admin*/
+    /** @notice set token to airdrop and admin
+        @param _token the addres of the KVK token
+        @param _admin the address of the admi of the airdrop
+    */
     constructor(address _token, address _admin) {
-        admin = _admin;
+        admin = _admin; ///@dev we dont set msg.sender to add more flexibility
         token = IERC20(_token);
     }
 
@@ -41,6 +44,7 @@ contract Airdrop {
      *@notice allows recipients to claims their tokens
      *@param amount specifies the amounts of tokens to claim
      *@param signature signature provided by the backend in order to verified that is the correct recipient
+     @dev this function compute the message that was signed in the backend
      */
 
     function claimTokens(
@@ -48,6 +52,7 @@ contract Airdrop {
         uint256 amount,
         bytes calldata signature
     ) external {
+
         bytes32 message =
             _prefixed(keccak256(abi.encodePacked(recipient, amount)));
 
@@ -82,6 +87,8 @@ contract Airdrop {
             );
     }
 
+
+    //
     function _recoverSigner(bytes32 message, bytes memory sig)
         internal
         pure
@@ -93,8 +100,11 @@ contract Airdrop {
 
         (v,r,s) = splitSignature(sig);
 
+        return ecrecover(message, v, r, s);
+
     }
 
+    //split the signature to recovery, to stract the signature elements in ehtereum
     function splitSignature(bytes memory sig)
         internal
         pure

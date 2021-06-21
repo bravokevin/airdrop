@@ -1,4 +1,6 @@
-const { expect } = require('chai');
+const { expect, assert } = require('chai');
+
+const { expectRevert } = require('@openzeppelin/test-helpers');
 
 describe('Airdrop', function () {
   before(async function () {
@@ -15,6 +17,19 @@ describe('Airdrop', function () {
     await this.airdropContract.deployed();
   });
 
+
+  // const createSignature = params =>{
+  //   params = {recipient: account[1], amount:100, ...params};
+
+  //   const message = ethers.utils.keccak256(
+  //     {t: 'address', v: params.recipient},
+  //     {t: 'uint256', v: params.amount}
+  //   ).toString("hex");
+
+  //   const signature = signer.signMessage(message)
+  //     console.log(`this is the signature ${signature}`)
+  // }
+
   it('Should initialized correctly', async function () {
 
     expect(await this.airdropContract.admin()).to.equal(owner.address);
@@ -30,7 +45,11 @@ describe('Airdrop', function () {
   });
 
   // it("should not allowed other accounts to set new admins", async function () {
-  //   await this.airdropContract.updateAdmin(accounts[2].address, { from: accounts[2].address})
 
+  //   await expectRevert(
+  //     this.airdropContract.connect(accounts[2]).updateAdmin(accounts[2].address, { from: accounts[2].address }),
+  //     // "Only the admin is awllowed to call this function"
+  //   )
+      
   // })
 });
