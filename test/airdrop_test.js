@@ -18,17 +18,19 @@ describe('Airdrop', function () {
   });
 
 
-  // const createSignature = params =>{
-  //   params = {recipient: account[1], amount:100, ...params};
+  const createSignature = params =>{
+    params = {recipient: accounts[1], amount:100, ...params};
 
-  //   const message = ethers.utils.keccak256(
-  //     {t: 'address', v: params.recipient},
-  //     {t: 'uint256', v: params.amount}
-  //   ).toString("hex");
+    console.log(params.recipient.address)
 
-  //   const signature = signer.signMessage(message)
-  //     console.log(`this is the signature ${signature}`)
-  // }
+    // const message = ethers.utils.keccak256(
+    //   {t: ethers.utils.toUtf8Bytes('address'), v: params.recipient.address},
+    //   {t: ethers.utils.toUtf8Bytes('uint256'), v: params.amount}
+    // ).toString("hex");
+    // const signature = signer.signMessage(message)
+    //   console.log(`this is the signature ${signature}`)
+    // return {signature, recipient: params.recipient.address, amount: params.amount}
+  }
 
   it('Should initialized correctly', async function () {
 
@@ -46,10 +48,12 @@ describe('Airdrop', function () {
 
   // it("should not allowed other accounts to set new admins", async function () {
 
-  //   await expectRevert(
-  //     this.airdropContract.connect(accounts[2]).updateAdmin(accounts[2].address, { from: accounts[2].address }),
-  //     // "Only the admin is awllowed to call this function"
-  //   )
-      
+  //     await this.airdropContract.updateAdmin(accounts[2].address, { from: accounts[5].address })
+
   // })
+
+  it('should airdrop', async function (){
+    // const {signature, recipient, amount} = 
+    createSignature();
+  })
 });
